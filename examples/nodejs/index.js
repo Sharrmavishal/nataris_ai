@@ -103,6 +103,36 @@ async function main() {
     console.log(`   Response: ${result.output}`);
     console.log(`   Tokens used: ${result.usage.total_tokens}\n`);
 
+    // 4. Chat Completions (OpenAI-compatible)
+    console.log('4. Chat completion...');
+    const chatRes = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama-3.2-1b',
+        messages: [{ role: 'user', content: 'What is quantum computing?' }],
+        max_tokens: 100,
+      }),
+    });
+    const chat = await chatRes.json();
+    console.log(`   Response: ${chat.choices?.[0]?.message?.content?.slice(0, 80)}...\n`);
+
+    // 5. Orchestration — multi-step research workflow
+    console.log('5. Orchestrated research workflow...');
+    const orchRes = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama-3.2-1b',
+        messages: [{ role: 'user', content: 'Research the impact of AI on healthcare' }],
+        orchestration: { enabled: true, workflow: 'research', max_cost_usd: 1.0 },
+      }),
+    });
+    const orch = await orchRes.json();
+    console.log(`   Workflow: ${orch.nataris?.workflow_id || 'N/A'}`);
+    console.log(`   Steps: ${orch.nataris?.steps_executed || 'N/A'}`);
+    console.log(`   Cost: $${orch.nataris?.total_cost_usd || 'N/A'}\n`);
+
     console.log('=== Done ===');
   } catch (error) {
     console.error('Error:', error.message);

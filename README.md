@@ -110,6 +110,31 @@ response = client.chat.completions.create(
 | **Voice Detection** | Silero VAD | Speech activity detection |
 | **Voice Agent** | STT → LLM → TTS | Conversational AI pipeline |
 
+## Advanced Features
+
+| Feature | Description |
+|---------|-------------|
+| **Multi-Step Workflows** | Orchestrate research, code gen, agent, and map-reduce pipelines via a single API call |
+| **RAG (Document Q&A)** | Upload documents, get answers grounded in your content |
+| **Conversation Memory** | Server-side message persistence with auto-summarization |
+| **Cost Controls** | Budget caps per workflow, cost estimation endpoint |
+
+### Orchestration Example
+
+```python
+response = client.chat.completions.create(
+    model="llama-3.2-1b-instruct-q4_k_m",
+    messages=[{"role": "user", "content": "Research renewable energy trends"}],
+    extra_body={
+        "orchestration": {
+            "enabled": True,
+            "workflow": "research",
+            "max_cost_usd": 1.0
+        }
+    }
+)
+```
+
 ---
 
 ## What You Can Build
@@ -119,6 +144,8 @@ response = client.chat.completions.create(
 - **Creative freedom** — Open-weight models, your rules
 - **Bots & automation** — High volume without strict rate limits
 - **Prototyping** — Test ideas without big upfront spend
+- **Research pipelines** — Multi-step analysis orchestrated automatically
+- **Document Q&A** — RAG-powered answers from your own documents
 
 ---
 
@@ -149,8 +176,8 @@ Built on amazing open-source projects:
 
 ## Documentation
 
-- [API Reference](https://nataris.ai/docs) — Complete endpoint docs
-- [Integration Guide](./docs/integration-guide.md) — Step-by-step tutorial
+- [API Reference](./docs/api-reference.md) — Complete endpoint docs (orchestration, RAG, conversations)
+- [Integration Guide](./docs/integration-guide.md) — Step-by-step tutorial with advanced features
 - [Security](https://nataris.ai/security) — Our security model
 - [FAQ](https://nataris.ai/faq) — Common questions
 

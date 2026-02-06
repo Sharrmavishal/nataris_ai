@@ -91,6 +91,42 @@ def main():
     print(f'   Response: {result["output"]}')
     print(f'   Tokens used: {result["usage"]["total_tokens"]}\n')
 
+    # 4. Chat Completions (OpenAI-compatible)
+    print('4. Chat completion...')
+    chat_response = requests.post(
+        f'{API_URL}/chat/completions',
+        headers=HEADERS,
+        json={
+            'model': 'llama-3.2-1b',
+            'messages': [{'role': 'user', 'content': 'What is quantum computing?'}],
+            'max_tokens': 100,
+        }
+    )
+    chat = chat_response.json()
+    content = chat.get('choices', [{}])[0].get('message', {}).get('content', '')
+    print(f'   Response: {content[:80]}...\n')
+
+    # 5. Orchestration — multi-step research workflow
+    print('5. Orchestrated research workflow...')
+    orch_response = requests.post(
+        f'{API_URL}/chat/completions',
+        headers=HEADERS,
+        json={
+            'model': 'llama-3.2-1b',
+            'messages': [{'role': 'user', 'content': 'Research the impact of AI on healthcare'}],
+            'orchestration': {
+                'enabled': True,
+                'workflow': 'research',
+                'max_cost_usd': 1.0,
+            },
+        }
+    )
+    orch = orch_response.json()
+    nataris = orch.get('nataris', {})
+    print(f'   Workflow: {nataris.get("workflow_id", "N/A")}')
+    print(f'   Steps: {nataris.get("steps_executed", "N/A")}')
+    print(f'   Cost: ${nataris.get("total_cost_usd", "N/A")}\n')
+
     print('=== Done ===')
 
 

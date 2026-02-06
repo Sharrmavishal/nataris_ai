@@ -24,6 +24,91 @@ API keys are prefixed with:
 
 ---
 
+### POST /chat/completions
+
+**OpenAI-compatible** endpoint for conversational AI. Recommended for multi-turn conversations.
+
+> **Important:** Nataris is stateless. Each request may hit a different provider device. You must send the full conversation history (messages array) with each request.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `model` | string | Yes | Model identifier (e.g., "llama-3.2-1b") |
+| `messages` | array | Yes | Conversation history (see below) |
+| `max_tokens` | integer | No | Maximum tokens to generate (default: 256) |
+| `temperature` | float | No | Randomness 0-2 (default: 0.7) |
+| `top_p` | float | No | Nucleus sampling 0-1 (default: 0.9) |
+| `stream` | boolean | No | Enable SSE streaming (default: false) |
+| `conversation_id` | string | No | Optional ID for your analytics |
+
+**Message Format:**
+
+```json
+{
+  "role": "system" | "user" | "assistant",
+  "content": "Message text"
+}
+```
+
+**Example Request:**
+
+```bash
+curl -X POST https://api.nataris.ai/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama-3.2-1b",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "What is Python?"},
+      {"role": "assistant", "content": "Python is a programming language..."},
+      {"role": "user", "content": "Show me an example"}
+    ],
+    "max_tokens": 256
+  }'
+```
+
+**Example Response:**
+
+```json
+{
+  "id": "chatcmpl-abc123xyz",
+  "object": "chat.completion",
+  "created": 1706000000,
+  "model": "llama-3.2-1b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Here's a simple Python example:\n\n```python\nprint('Hello, World!')\n```"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 45,
+    "completion_tokens": 20,
+    "total_tokens": 65
+  }
+}
+```
+
+**Streaming Response (SSE):**
+
+When `stream: true`, returns Server-Sent Events:
+
+```
+data: {"id":"chatcmpl-abc123","choices":[{"delta":{"role":"assistant"}}]}
+data: {"id":"chatcmpl-abc123","choices":[{"delta":{"content":"Here's"}}]}
+data: {"id":"chatcmpl-abc123","choices":[{"delta":{"content":" a"}}]}
+data: {"id":"chatcmpl-abc123","choices":[{"finish_reason":"stop"}]}
+data: [DONE]
+```
+
+---
+
 ### POST /inference
 
 Generate text using a language model.
@@ -232,7 +317,7 @@ curl https://api.nataris.ai/v1/usage \
 | 402 | `INSUFFICIENT_CREDITS` | Account balance depleted |
 | 404 | `MODEL_NOT_FOUND` | Model doesn't exist |
 | 429 | `RATE_LIMIT_EXCEEDED` | Too many requests |
-| 503 | `PROVIDER_UNAVAILABLE` | No providers available |
+| 202 | `MODEL_PROVISIONING` | Model is being provisioned (request queued) |
 
 **Error Response Format:**
 
@@ -245,6 +330,189 @@ curl https://api.nataris.ai/v1/usage \
     "retry_after": 60
   }
 }
+```
+
+---
+
+---
+
+### POST /chat/completions (with Orchestration)
+
+Run multi-step AI workflows through a single API call.
+
+**Additional Fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `orchestration.enabled` | boolean | No | Enable multi-step workflow |
+| `orchestration.workflow` | string | No | `research`, `code`, `agent`, `map_reduce`, `auto` |
+| `orchestration.max_steps` | integer | No | Maximum inference steps (default: 10) |
+| `orchestration.max_cost_usd` | number | No | Budget cap in USD |
+
+**Example Request:**
+
+```bash
+curl -X POST https://api.nataris.ai/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama-3.2-1b",
+    "messages": [{"role": "user", "content": "Research renewable energy trends"}],
+    "orchestration": {
+      "enabled": true,
+      "workflow": "research",
+      "max_steps": 10,
+      "max_cost_usd": 1.0
+    }
+  }'
+```
+
+**Workflow Types:**
+
+| Type | Steps | Use Case |
+|------|-------|----------|
+| `research` | research → analyze → write | Deep research synthesis |
+| `code` | plan → implement → review | Code generation with review |
+| `agent` | think → act (loop) | ReAct reasoning agent |
+| `map_reduce` | chunk → map → reduce | Large document analysis |
+| `auto` | Auto-selected | Based on input |
+
+**Pricing:** Orchestrated steps are billed at 1.5x base model rate. Use `POST /v1/workflows/estimate` to preview costs.
+
+---
+
+### POST /documents
+
+Upload a document for RAG (Retrieval-Augmented Generation).
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `content` | string | Yes | Full document text |
+| `document_name` | string | No | Filename for reference |
+| `chunk_size` | integer | No | Characters per chunk (default: 1000) |
+| `chunk_overlap` | integer | No | Overlap between chunks (default: 200) |
+
+**Example Request:**
+
+```bash
+curl -X POST https://api.nataris.ai/v1/documents \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Your full document text here...",
+    "document_name": "research-paper.txt"
+  }'
+```
+
+**Example Response:**
+
+```json
+{
+  "document_id": "doc_abc123",
+  "chunks_created": 12,
+  "document_name": "research-paper.txt"
+}
+```
+
+---
+
+### POST /chat/completions (with RAG)
+
+Ask questions grounded in your uploaded documents.
+
+**Additional Fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `rag.enabled` | boolean | No | Enable RAG context injection |
+| `rag.document_id` | string | No | Limit to specific document |
+| `rag.max_chunks` | integer | No | Max context chunks (default: 3) |
+
+**Example:**
+
+```bash
+curl -X POST https://api.nataris.ai/v1/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama-3.2-1b",
+    "messages": [{"role": "user", "content": "Summarize the key findings"}],
+    "rag": {"enabled": true, "document_id": "doc_abc123", "max_chunks": 5}
+  }'
+```
+
+---
+
+### POST /conversations
+
+Create a conversation for server-side message persistence.
+
+**Example Response:**
+
+```json
+{
+  "id": "conv_xyz789",
+  "title": null,
+  "message_count": 0,
+  "created_at": "2026-01-25T10:00:00Z"
+}
+```
+
+Then pass `conversation_id` in chat completions:
+
+```json
+{
+  "model": "llama-3.2-1b",
+  "messages": [{"role": "user", "content": "Hello!"}],
+  "conversation_id": "conv_xyz789"
+}
+```
+
+Messages are automatically persisted. Titles are auto-generated. Older messages are summarized to maintain context efficiently.
+
+**Other conversation endpoints:**
+- `GET /conversations` — List conversations
+- `GET /conversations/:id` — Get context (messages + summary)
+- `DELETE /conversations/:id` — Delete conversation
+
+---
+
+### GET /workflows
+
+List your orchestration workflows.
+
+**Example Response:**
+
+```json
+{
+  "workflows": [
+    {
+      "id": "wf_123",
+      "type": "RESEARCH",
+      "status": "COMPLETED",
+      "task": "Research renewable energy",
+      "total_cost_usd": 0.042,
+      "steps_executed": 3,
+      "created_at": "2026-01-25T10:00:00Z"
+    }
+  ],
+  "total": 1
+}
+```
+
+---
+
+### POST /workflows/estimate
+
+Preview cost before running a workflow.
+
+```bash
+curl -X POST https://api.nataris.ai/v1/workflows/estimate \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "llama-3.2-1b", "workflow": "research"}'
 ```
 
 ---

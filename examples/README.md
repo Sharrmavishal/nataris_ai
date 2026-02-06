@@ -1,6 +1,6 @@
 # Nataris API Examples
 
-Sample code for integrating with the Nataris API.
+Sample code for integrating with the Nataris API — including chat completions, orchestration workflows, RAG, and conversation memory.
 
 ## Prerequisites
 
@@ -11,13 +11,13 @@ Sample code for integrating with the Nataris API.
 
 ### cURL
 
-Simple command-line examples.
+Command-line examples covering inference, chat, orchestration, and RAG.
 
 ```bash
 cd curl
 chmod +x *.sh
 
-# Basic inference
+# Basic inference + chat + orchestration + RAG
 ./basic-inference.sh
 
 # Transcribe audio
@@ -32,6 +32,8 @@ npm install
 NATARIS_API_KEY=your_key npm start
 ```
 
+Demonstrates: text inference, chat completions, and orchestrated research workflow.
+
 ### Python
 
 ```bash
@@ -40,8 +42,21 @@ pip install -r requirements.txt
 NATARIS_API_KEY=your_key python example.py
 ```
 
+Demonstrates: text inference, chat completions, and orchestrated research workflow.
+
+## What's Covered
+
+| Feature | cURL | Node.js | Python |
+|---------|------|---------|--------|
+| Text inference | Yes | Yes | Yes |
+| Chat completions | Yes | Yes | Yes |
+| Orchestration workflows | Yes | Yes | Yes |
+| RAG (document upload) | Yes | — | — |
+| Audio transcription | Yes | — | Yes |
+
 ## Need Help?
 
-- [API Documentation](https://nataris.ai/docs)
+- [API Reference](../docs/api-reference.md)
+- [Integration Guide](../docs/integration-guide.md)
 - [FAQ](https://nataris.ai/faq)
 - [Support](mailto:support@nataris.ai)
