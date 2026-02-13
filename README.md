@@ -15,7 +15,7 @@
 
 ## What is Nataris?
 
-Developers get affordable, private inference via API. Providers earn by running models on their mobiles—and keep 80%. The network grows with every device that joins.
+Developers get affordable, private inference via API. Providers earn by running models on their mobiles—and keep 85%. The network grows with every device that joins.
 
 **Powered by people, not datacenters.**
 
@@ -87,7 +87,7 @@ response = client.chat.completions.create(
 | **Earn from idle compute** | Your phone works while you don't |
 | **No expertise needed** | Just install and go online |
 | **Device protection** | Thermal and battery safeguards |
-| **Keep 80%** | Fair revenue share |
+| **Keep 85%** | Fair revenue share |
 
 ### Get Started
 
@@ -104,11 +104,9 @@ response = client.chat.completions.create(
 
 | Category | Models | Use Cases |
 |----------|--------|-----------|
-| **Text Generation** | Llama 3.2, Qwen 2.5, Phi-3, Mistral | Chat, code, summarization |
-| **Speech-to-Text** | Whisper (3 sizes) | Transcription, voice commands |
-| **Text-to-Speech** | Piper VITS | Voice synthesis, accessibility |
-| **Voice Detection** | Silero VAD | Speech activity detection |
-| **Voice Agent** | STT → LLM → TTS | Conversational AI pipeline |
+| **Text Generation** | Llama 3.2 1B, Qwen 2.5 0.5B, Phi-3 Mini, Mistral 7B, Llama 2 7B | Chat, code, summarization |
+
+> **Audio (STT, TTS, Voice Agent):** Built but temporarily disabled while we scale the text inference network. Will be re-enabled once provider capacity grows.
 
 ## Advanced Features
 
@@ -139,9 +137,8 @@ response = client.chat.completions.create(
 
 ## What You Can Build
 
-- **Privacy-first apps** — Sensitive data stays on devices, not central logs
-- **Multi-language support** — 100+ languages via Whisper
-- **Creative freedom** — Open-weight models, your rules
+- **Creative freedom** — Open-weight models, no content filtering, your rules
+- **Privacy-first apps** — No central prompt logging, data not pooled in one cloud
 - **Bots & automation** — High volume without strict rate limits
 - **Prototyping** — Test ideas without big upfront spend
 - **Research pipelines** — Multi-step analysis orchestrated automatically
@@ -156,7 +153,8 @@ response = client.chat.completions.create(
 | **Logging** | No central prompt logging | Prompts stored on servers |
 | **Models** | Open-weight, unfiltered | Vendor-controlled |
 | **Pricing** | Pay-per-use, no minimums | Subscriptions, limits |
-| **Economics** | 80% to providers | Value to corporations |
+| **Economics** | 85% to providers | Value to corporations |
+| **Filtering** | No content filtering | Vendor-controlled output |
 
 ---
 
@@ -169,8 +167,7 @@ Built on amazing open-source projects:
 | [RunAnywhere](https://github.com/AugustDev/runanywhere) | Cross-platform AI inference |
 | [llama.cpp](https://github.com/ggerganov/llama.cpp) | Efficient LLM inference |
 | [ONNX Runtime](https://github.com/microsoft/onnxruntime) | Cross-platform ML |
-| [Whisper](https://github.com/openai/whisper) | Speech recognition |
-| [Piper](https://github.com/rhasspy/piper) | Text-to-speech |
+| [Ollama](https://github.com/ollama/ollama) | Cloud backstop inference |
 
 ---
 

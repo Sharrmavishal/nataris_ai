@@ -34,7 +34,7 @@ POST /v1/chat/completions
 **Request:**
 ```json
 {
-  "model": "llama-3.2-1b",
+  "model": "llama-3.2-1b-instruct-q4_k_m",
   "messages": [
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": "What is Python?"},
@@ -49,7 +49,7 @@ POST /v1/chat/completions
 ```json
 {
   "id": "chatcmpl-abc123",
-  "model": "llama-3.2-1b",
+  "model": "llama-3.2-1b-instruct-q4_k_m",
   "choices": [{
     "message": {
       "role": "assistant",
@@ -76,7 +76,7 @@ POST /v1/inference
 **Request:**
 ```json
 {
-  "model": "qwen2.5-0.5b",
+  "model": "qwen2.5-0.5b-instruct-q6_k",
   "prompt": "Explain quantum computing in simple terms",
   "max_tokens": 200,
   "temperature": 0.7
@@ -87,7 +87,7 @@ POST /v1/inference
 ```json
 {
   "id": "inf_abc123",
-  "model": "qwen2.5-0.5b",
+  "model": "qwen2.5-0.5b-instruct-q6_k",
   "output": "Quantum computing uses quantum mechanics...",
   "usage": {
     "prompt_tokens": 8,
@@ -97,70 +97,17 @@ POST /v1/inference
 }
 ```
 
-### Speech-to-Text (Whisper)
-
-Transcribe audio to text.
-
-```bash
-POST /v1/transcribe
-```
-
-**Request (multipart/form-data):**
-```bash
-curl -X POST https://api.nataris.ai/v1/transcribe \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -F "file=@audio.wav" \
-  -F "model=whisper-small"
-```
-
-**Response:**
-```json
-{
-  "id": "trans_xyz789",
-  "text": "Hello, how can I help you today?",
-  "language": "en",
-  "duration": 2.5
-}
-```
-
-### Text-to-Speech (Piper)
-
-Convert text to natural speech.
-
-```bash
-POST /v1/synthesize
-```
-
-**Request:**
-```json
-{
-  "model": "piper-en-us",
-  "text": "Welcome to Nataris, the people's AI network.",
-  "voice": "default"
-}
-```
-
-**Response:**
-Returns audio file (WAV format).
-
 ## Supported Models
-
-### Language Models
 
 | Model | Parameters | Best For |
 |-------|------------|----------|
-| `qwen2.5-0.5b` | 0.5B | Fast responses, simple tasks |
-| `qwen2.5-1.5b` | 1.5B | Balanced performance |
-| `llama-3.2-1b` | 1B | General purpose |
+| `qwen2.5-0.5b-instruct-q6_k` | 0.5B | Fast responses, simple tasks |
+| `llama-3.2-1b-instruct-q4_k_m` | 1B | General purpose |
 | `phi-3-mini` | 3.8B | Complex reasoning |
+| `mistral-7b` | 7B | Advanced tasks |
+| `llama-2-7b` | 7B | Broad knowledge |
 
-### Speech Models
-
-| Model | Size | Languages |
-|-------|------|-----------|
-| `whisper-tiny` | 39MB | Multilingual |
-| `whisper-small` | 244MB | Multilingual |
-| `piper-en-us` | 20MB | English |
+> **Audio models (Whisper, Piper):** Built but temporarily disabled. Will be re-enabled once text inference capacity grows.
 
 ## Error Handling
 
@@ -192,7 +139,7 @@ For complex tasks, Nataris can chain multiple inference steps automatically. Add
 
 ```json
 {
-  "model": "llama-3.2-1b",
+  "model": "llama-3.2-1b-instruct-q4_k_m",
   "messages": [{"role": "user", "content": "Research the benefits of solar energy"}],
   "orchestration": {
     "enabled": true,
@@ -205,7 +152,7 @@ For complex tasks, Nataris can chain multiple inference steps automatically. Add
 
 **Workflow types:** `research` (research → analyze → write), `code` (plan → implement → review), `agent` (ReAct think/act loop), `map_reduce` (parallel document processing), `auto` (auto-detected).
 
-Orchestrated steps are billed at 1.5x base rate. Use `POST /v1/workflows/estimate` to preview costs before running.
+Orchestrated steps are billed at the same base model rate (no surcharge). Use `POST /v1/workflows/estimate` to preview costs before running.
 
 ## Document-Grounded Responses (RAG)
 
@@ -223,7 +170,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [{"role": "user", "content": "Summarize the key findings"}],
     "rag": {"enabled": true, "document_id": "DOC_ID", "max_chunks": 5}
   }'
@@ -240,7 +187,7 @@ Nataris supports **server-side conversation memory** — no need to send full ch
 curl -X POST https://api.nataris.ai/v1/conversations \
   -H "Authorization: Bearer YOUR_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"model_id": "llama-3.2-1b"}'
+  -d '{"model_id": "llama-3.2-1b-instruct-q4_k_m"}'
 # Returns: {"id": "conv_xyz789", ...}
 
 # 2. Chat with conversation_id — messages auto-persist
@@ -248,7 +195,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [{"role": "user", "content": "Hello!"}],
     "conversation_id": "conv_xyz789"
   }'
@@ -258,7 +205,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [{"role": "user", "content": "Tell me more about that"}],
     "conversation_id": "conv_xyz789"
   }'
@@ -293,21 +240,6 @@ Use `conversation_id` as shown above — the API handles everything.
    → Device B has full context and responds correctly!
 ```
 
-### Best Practice: Use the SDK
-
-Our TypeScript SDK includes a `Conversation` class that handles this automatically:
-
-```typescript
-import { NatarisClient, Conversation } from '@nataris/sdk';
-
-const nataris = new NatarisClient({ apiKey: 'YOUR_KEY' });
-const conversation = new Conversation(nataris, { model: 'llama-3.2-1b' });
-
-// SDK automatically accumulates and sends full history
-await conversation.send('What is Python?');
-await conversation.send('Show me an example'); // Context included automatically!
-```
-
 ### Manual Context Management
 
 If using the API directly, maintain message history in your application:
@@ -326,7 +258,7 @@ async function chat(userMessage) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'llama-3.2-1b',
+      model: 'llama-3.2-1b-instruct-q4_k_m',
       messages: messages  // Send full history
     })
   });
@@ -349,7 +281,7 @@ Pass `conversation_id` to enable server-side memory, or use it for your own anal
 
 ```json
 {
-  "model": "llama-3.2-1b",
+  "model": "llama-3.2-1b-instruct-q4_k_m",
   "messages": [...],
   "conversation_id": "conv_xyz789"
 }
@@ -367,7 +299,7 @@ try {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ model: 'qwen2.5-0.5b', prompt: 'Hello' })
+    body: JSON.stringify({ model: 'qwen2.5-0.5b-instruct-q6_k', prompt: 'Hello' })
   });
   
   if (!response.ok) {
@@ -386,9 +318,9 @@ try {
 ### 2. Use Appropriate Models
 
 Choose the smallest model that meets your needs:
-- Simple Q&A → `qwen2.5-0.5b`
+- Simple Q&A → `qwen2.5-0.5b-instruct-q6_k`
+- General purpose → `llama-3.2-1b-instruct-q4_k_m`
 - Complex reasoning → `phi-3-mini`
-- Quick transcription → `whisper-tiny`
 
 ### 3. Monitor Usage
 
@@ -407,44 +339,23 @@ Check your usage in the [billing dashboard](https://nataris.ai/billing) to:
 
 ## SDKs
 
-### TypeScript / Node.js (Available Now)
+Official SDKs are coming soon. In the meantime, Nataris is **OpenAI-compatible** — use the OpenAI SDK with a custom base URL:
 
-```bash
-npm install @nataris/sdk
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="YOUR_NATARIS_KEY",
+    base_url="https://api.nataris.ai/v1"
+)
+
+response = client.chat.completions.create(
+    model="llama-3.2-1b-instruct-q4_k_m",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
 ```
 
-```typescript
-import { NatarisClient, Conversation } from '@nataris/sdk';
-
-// Initialize
-const nataris = new NatarisClient({ apiKey: 'YOUR_KEY' });
-
-// Simple chat
-const response = await nataris.chat({
-  model: 'llama-3.2-1b',
-  messages: [{ role: 'user', content: 'Hello!' }]
-});
-
-// Multi-turn conversation (auto context management)
-const conversation = new Conversation(nataris, { 
-  model: 'llama-3.2-1b',
-  systemPrompt: 'You are a helpful assistant.'
-});
-await conversation.send('What is Python?');
-await conversation.send('Show me an example');  // Has context!
-
-// Streaming
-for await (const chunk of nataris.chatStream({
-  model: 'llama-3.2-1b',
-  messages: [{ role: 'user', content: 'Tell me a story' }]
-})) {
-  process.stdout.write(chunk.choices[0]?.delta?.content ?? '');
-}
-```
-
-### Python / Go (Coming Soon)
-
-We're working on additional SDKs. Check our [examples](../examples/) for raw API usage.
+Check our [examples](../examples/) for more integration patterns.
 
 ## Support
 

@@ -26,7 +26,7 @@ HEADERS = {
 }
 
 
-def inference(prompt: str, model: str = 'qwen2.5-0.5b', max_tokens: int = 100) -> dict:
+def inference(prompt: str, model: str = 'qwen2.5-0.5b-instruct-q6_k', max_tokens: int = 100) -> dict:
     """Make an inference request."""
     response = requests.post(
         f'{API_URL}/inference',
@@ -37,19 +37,6 @@ def inference(prompt: str, model: str = 'qwen2.5-0.5b', max_tokens: int = 100) -
             'max_tokens': max_tokens,
         }
     )
-    response.raise_for_status()
-    return response.json()
-
-
-def transcribe(audio_path: str, model: str = 'whisper-small') -> dict:
-    """Transcribe an audio file."""
-    with open(audio_path, 'rb') as f:
-        response = requests.post(
-            f'{API_URL}/transcribe',
-            headers={'Authorization': f'Bearer {API_KEY}'},
-            files={'file': f},
-            data={'model': model}
-        )
     response.raise_for_status()
     return response.json()
 
@@ -97,7 +84,7 @@ def main():
         f'{API_URL}/chat/completions',
         headers=HEADERS,
         json={
-            'model': 'llama-3.2-1b',
+            'model': 'llama-3.2-1b-instruct-q4_k_m',
             'messages': [{'role': 'user', 'content': 'What is quantum computing?'}],
             'max_tokens': 100,
         }
@@ -112,7 +99,7 @@ def main():
         f'{API_URL}/chat/completions',
         headers=HEADERS,
         json={
-            'model': 'llama-3.2-1b',
+            'model': 'llama-3.2-1b-instruct-q4_k_m',
             'messages': [{'role': 'user', 'content': 'Research the impact of AI on healthcare'}],
             'orchestration': {
                 'enabled': True,

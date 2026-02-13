@@ -15,7 +15,7 @@ curl -s -X POST "${API_URL}/inference" \
   -H "Authorization: Bearer ${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen2.5-0.5b",
+    "model": "qwen2.5-0.5b-instruct-q6_k",
     "prompt": "What is the capital of France? Answer in one sentence.",
     "max_tokens": 50
   }' | jq .
@@ -45,7 +45,7 @@ curl -s -X POST "${API_URL}/chat/completions" \
   -H "Authorization: Bearer ${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [{"role": "user", "content": "What is quantum computing?"}],
     "max_tokens": 100
   }' | jq .
@@ -59,7 +59,7 @@ curl -s -X POST "${API_URL}/chat/completions" \
   -H "Authorization: Bearer ${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [{"role": "user", "content": "Research renewable energy trends"}],
     "orchestration": {
       "enabled": true,

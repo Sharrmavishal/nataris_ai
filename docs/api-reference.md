@@ -34,7 +34,7 @@ API keys are prefixed with:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `model` | string | Yes | Model identifier (e.g., "llama-3.2-1b") |
+| `model` | string | Yes | Model identifier (e.g., "llama-3.2-1b-instruct-q4_k_m") |
 | `messages` | array | Yes | Conversation history (see below) |
 | `max_tokens` | integer | No | Maximum tokens to generate (default: 256) |
 | `temperature` | float | No | Randomness 0-2 (default: 0.7) |
@@ -58,7 +58,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [
       {"role": "system", "content": "You are a helpful assistant."},
       {"role": "user", "content": "What is Python?"},
@@ -76,7 +76,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
   "id": "chatcmpl-abc123xyz",
   "object": "chat.completion",
   "created": 1706000000,
-  "model": "llama-3.2-1b",
+  "model": "llama-3.2-1b-instruct-q4_k_m",
   "choices": [
     {
       "index": 0,
@@ -130,7 +130,7 @@ curl -X POST https://api.nataris.ai/v1/inference \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen2.5-0.5b",
+    "model": "qwen2.5-0.5b-instruct-q6_k",
     "prompt": "Write a haiku about AI",
     "max_tokens": 50,
     "temperature": 0.8
@@ -144,7 +144,7 @@ curl -X POST https://api.nataris.ai/v1/inference \
   "id": "inf_1234567890",
   "object": "inference",
   "created": 1706000000,
-  "model": "qwen2.5-0.5b",
+  "model": "qwen2.5-0.5b-instruct-q6_k",
   "output": "Silicon minds wake\nLearning from humanity\nFuture uncertain",
   "usage": {
     "prompt_tokens": 6,
@@ -157,81 +157,6 @@ curl -X POST https://api.nataris.ai/v1/inference \
   }
 }
 ```
-
----
-
-### POST /transcribe
-
-Convert audio to text using Whisper.
-
-**Request Body (multipart/form-data):**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `file` | file | Yes | Audio file (WAV, MP3, FLAC, M4A) |
-| `model` | string | No | Whisper model (default: whisper-small) |
-| `language` | string | No | ISO language code (auto-detect if omitted) |
-
-**Example Request:**
-
-```bash
-curl -X POST https://api.nataris.ai/v1/transcribe \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -F "file=@recording.wav" \
-  -F "model=whisper-small"
-```
-
-**Example Response:**
-
-```json
-{
-  "id": "trans_9876543210",
-  "object": "transcription",
-  "text": "Hello, this is a test recording.",
-  "language": "en",
-  "duration": 3.2,
-  "segments": [
-    {
-      "start": 0.0,
-      "end": 3.2,
-      "text": "Hello, this is a test recording."
-    }
-  ]
-}
-```
-
----
-
-### POST /synthesize
-
-Convert text to speech using Piper.
-
-**Request Body:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `text` | string | Yes | Text to synthesize |
-| `model` | string | No | TTS model (default: piper-en-us) |
-| `voice` | string | No | Voice variant |
-| `speed` | float | No | Speed multiplier 0.5-2.0 (default: 1.0) |
-
-**Example Request:**
-
-```bash
-curl -X POST https://api.nataris.ai/v1/synthesize \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "text": "Welcome to Nataris.",
-    "model": "piper-en-us",
-    "speed": 1.0
-  }' \
-  --output speech.wav
-```
-
-**Response:**
-
-Returns audio file in WAV format (16-bit, 22050 Hz).
 
 ---
 
@@ -253,17 +178,17 @@ curl https://api.nataris.ai/v1/models \
   "object": "list",
   "data": [
     {
-      "id": "qwen2.5-0.5b",
+      "id": "qwen2.5-0.5b-instruct-q6_k",
       "object": "model",
       "type": "llm",
       "description": "Qwen 2.5 0.5B - Fast, efficient language model",
       "available": true
     },
     {
-      "id": "whisper-small",
+      "id": "llama-3.2-1b-instruct-q4_k_m",
       "object": "model",
-      "type": "stt",
-      "description": "Whisper Small - Multilingual speech recognition",
+      "type": "llm",
+      "description": "Llama 3.2 1B - General purpose language model",
       "available": true
     }
   ]
@@ -294,7 +219,7 @@ curl https://api.nataris.ai/v1/usage \
   "total_requests": 1250,
   "total_tokens": 125000,
   "by_model": {
-    "qwen2.5-0.5b": {
+    "qwen2.5-0.5b-instruct-q6_k": {
       "requests": 1000,
       "tokens": 100000
     },
@@ -356,7 +281,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [{"role": "user", "content": "Research renewable energy trends"}],
     "orchestration": {
       "enabled": true,
@@ -377,7 +302,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
 | `map_reduce` | chunk → map → reduce | Large document analysis |
 | `auto` | Auto-selected | Based on input |
 
-**Pricing:** Orchestrated steps are billed at 1.5x base model rate. Use `POST /v1/workflows/estimate` to preview costs.
+**Pricing:** Orchestrated steps are billed at the same base model rate (no surcharge). Use `POST /v1/workflows/estimate` to preview costs.
 
 ---
 
@@ -437,7 +362,7 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "llama-3.2-1b",
+    "model": "llama-3.2-1b-instruct-q4_k_m",
     "messages": [{"role": "user", "content": "Summarize the key findings"}],
     "rag": {"enabled": true, "document_id": "doc_abc123", "max_chunks": 5}
   }'
@@ -464,7 +389,7 @@ Then pass `conversation_id` in chat completions:
 
 ```json
 {
-  "model": "llama-3.2-1b",
+  "model": "llama-3.2-1b-instruct-q4_k_m",
   "messages": [{"role": "user", "content": "Hello!"}],
   "conversation_id": "conv_xyz789"
 }
@@ -512,7 +437,7 @@ Preview cost before running a workflow.
 curl -X POST https://api.nataris.ai/v1/workflows/estimate \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"model": "llama-3.2-1b", "workflow": "research"}'
+  -d '{"model": "llama-3.2-1b-instruct-q4_k_m", "workflow": "research"}'
 ```
 
 ---

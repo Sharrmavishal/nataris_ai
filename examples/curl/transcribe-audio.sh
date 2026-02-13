@@ -1,30 +1,16 @@
 #!/bin/bash
 # Nataris API - Audio Transcription Example
+#
+# NOTE: Audio endpoints (STT, TTS, Voice Agent) are temporarily disabled
+# while we scale the text inference network. They will be re-enabled soon.
+#
 # Replace YOUR_API_KEY with your actual API key
 
 API_KEY="YOUR_API_KEY"
 API_URL="https://api.nataris.ai/v1"
 
-# Check if audio file is provided
-if [ -z "$1" ]; then
-  echo "Usage: ./transcribe-audio.sh <audio-file>"
-  echo "Example: ./transcribe-audio.sh recording.wav"
-  exit 1
-fi
-
-AUDIO_FILE="$1"
-
-# Check if file exists
-if [ ! -f "$AUDIO_FILE" ]; then
-  echo "Error: File not found: $AUDIO_FILE"
-  exit 1
-fi
-
-echo "Transcribing: $AUDIO_FILE"
-echo "Using model: whisper-small"
+echo "⚠️  Audio endpoints are temporarily disabled."
+echo "They will be re-enabled once text inference capacity grows."
 echo ""
-
-curl -X POST "${API_URL}/transcribe" \
-  -H "Authorization: Bearer ${API_KEY}" \
-  -F "file=@${AUDIO_FILE}" \
-  -F "model=whisper-small" | jq .
+echo "In the meantime, try text inference:"
+echo "  ./basic-inference.sh"

@@ -52,7 +52,6 @@ Demonstrates: text inference, chat completions, and orchestrated research workfl
 | Chat completions | Yes | Yes | Yes |
 | Orchestration workflows | Yes | Yes | Yes |
 | RAG (document upload) | Yes | — | — |
-| Audio transcription | Yes | — | Yes |
 
 ## Need Help?
 
