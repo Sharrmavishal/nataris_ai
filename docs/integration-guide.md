@@ -104,8 +104,8 @@ POST /v1/inference
 | `qwen2.5-0.5b-instruct-q6_k` | 0.5B | Fast responses, simple tasks |
 | `llama-3.2-1b-instruct-q4_k_m` | 1B | General purpose |
 | `phi-3-mini` | 3.8B | Complex reasoning |
-| `mistral-7b` | 7B | Advanced tasks |
-| `llama-2-7b` | 7B | Broad knowledge |
+| `mistral-7b` *(coming soon)* | 7B | Advanced tasks |
+| `llama-2-7b` *(coming soon)* | 7B | Broad knowledge |
 
 > **Audio models (Whisper, Piper):** Built but temporarily disabled. Will be re-enabled once text inference capacity grows.
 
@@ -154,29 +154,9 @@ For complex tasks, Nataris can chain multiple inference steps automatically. Add
 
 Orchestrated steps are billed at the same base model rate (no surcharge). Use `POST /v1/workflows/estimate` to preview costs before running.
 
-## Document-Grounded Responses (RAG)
+## Document-Grounded Responses (RAG) — Coming Soon
 
-Upload documents and use them as context for chat responses:
-
-```bash
-# 1. Upload a document
-curl -X POST https://api.nataris.ai/v1/documents \
-  -H "Authorization: Bearer YOUR_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"content": "Your document text...", "document_name": "paper.txt"}'
-
-# 2. Ask questions with document context
-curl -X POST https://api.nataris.ai/v1/chat/completions \
-  -H "Authorization: Bearer YOUR_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "llama-3.2-1b-instruct-q4_k_m",
-    "messages": [{"role": "user", "content": "Summarize the key findings"}],
-    "rag": {"enabled": true, "document_id": "DOC_ID", "max_chunks": 5}
-  }'
-```
-
-Document storage and semantic search are included at no extra cost.
+RAG (Retrieval-Augmented Generation) is in development and will allow you to upload documents and ground responses in your content.
 
 ## Conversation Memory
 
@@ -322,7 +302,11 @@ Choose the smallest model that meets your needs:
 - General purpose → `llama-3.2-1b-instruct-q4_k_m`
 - Complex reasoning → `phi-3-mini`
 
-### 3. Monitor Usage
+### 3. Use Streaming for Long Responses
+
+For Phi-3 or complex orchestration tasks, enable `stream: true` to avoid gateway timeouts on long responses.
+
+### 4. Monitor Usage
 
 Check your usage in the [billing dashboard](https://nataris.ai/billing) to:
 - Track credit consumption
