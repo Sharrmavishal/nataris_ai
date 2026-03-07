@@ -46,18 +46,18 @@ Developer App  →  Nataris API  →  Provider Network  →  AI Response
 | **$5 free credits** | No credit card required |
 | **Pay for what you use** | No vendor lock-in, no minimums |
 | **Open-weight models** | You choose how you use them |
-| **No central logging** | Data not pooled in one cloud |
+| **No model training** | Your prompts are never used to train AI models |
 | **OpenAI-compatible** | Swap your base URL in minutes |
 
 ### Quick Start
 
 ```bash
-curl -X POST https://api.nataris.ai/v1/jobs \
+curl -X POST https://api.nataris.ai/v1/chat/completions \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "modelId": "llama-3.2-1b-instruct-q4_k_m",
-    "prompt": "Explain quantum computing in one paragraph."
+    "model": "llama-3.2-1b-instruct-q4_k_m",
+    "messages": [{"role": "user", "content": "Explain quantum computing in one paragraph."}]
   }'
 ```
 
@@ -83,7 +83,7 @@ response = client.chat.completions.create(
 
 | Benefit | Details |
 |---------|---------|
-| **₹200 (~$2.50) joining bonus** | After your first successful job |
+| **Joining bonus** | Earn a bonus after completing your first job (subject to eligibility criteria) |
 | **Earn from idle compute** | Your phone works while you don't |
 | **No expertise needed** | Just install and go online |
 | **Device protection** | Thermal and battery safeguards |
@@ -104,7 +104,8 @@ response = client.chat.completions.create(
 
 | Category | Models | Use Cases |
 |----------|--------|-----------|
-| **Text Generation** | Llama 3.2 1B, Qwen 2.5 0.5B, Phi-3 Mini, Mistral 7B, Llama 2 7B | Chat, code, summarization |
+| **Text Generation** | Qwen 2.5 0.5B, Llama 3.2 1B, Phi-3 Mini 3.8B | Chat, code, summarization |
+| **Text Generation (coming soon)** | Mistral 7B, Llama 2 7B | Advanced tasks, broad knowledge |
 
 > **Audio (STT, TTS, Voice Agent):** Built but temporarily disabled while we scale the text inference network. Will be re-enabled once provider capacity grows.
 
@@ -113,7 +114,7 @@ response = client.chat.completions.create(
 | Feature | Description |
 |---------|-------------|
 | **Multi-Step Workflows** | Orchestrate research, code gen, agent, and map-reduce pipelines via a single API call |
-| **RAG (Document Q&A)** | Upload documents, get answers grounded in your content |
+| **RAG (Document Q&A)** | Upload documents, get answers grounded in your content *(coming soon)* |
 | **Conversation Memory** | Server-side message persistence with auto-summarization |
 | **Cost Controls** | Budget caps per workflow, cost estimation endpoint |
 
@@ -138,11 +139,11 @@ response = client.chat.completions.create(
 ## What You Can Build
 
 - **Creative freedom** — Open-weight models, no content filtering, your rules
-- **Privacy-first apps** — No central prompt logging, data not pooled in one cloud
+- **Privacy-first apps** — Your prompts are not used to train models or fed into corporate AI pipelines
 - **Bots & automation** — High volume without strict rate limits
 - **Prototyping** — Test ideas without big upfront spend
 - **Research pipelines** — Multi-step analysis orchestrated automatically
-- **Document Q&A** — RAG-powered answers from your own documents
+- **Document Q&A** — RAG-powered answers from your own documents *(coming soon)*
 
 ---
 
@@ -150,7 +151,7 @@ response = client.chat.completions.create(
 
 | | Nataris | Traditional APIs |
 |---|---------|------------------|
-| **Logging** | No central prompt logging | Prompts stored on servers |
+| **Data use** | Prompts never used for model training | Often used to improve models |
 | **Models** | Open-weight, unfiltered | Vendor-controlled |
 | **Pricing** | Pay-per-use, no minimums | Subscriptions, limits |
 | **Economics** | 85% to providers | Value to corporations |
@@ -173,7 +174,7 @@ Built on amazing open-source projects:
 
 ## Documentation
 
-- [API Reference](./docs/api-reference.md) — Complete endpoint docs (orchestration, RAG, conversations)
+- [API Reference](./docs/api-reference.md) — Complete endpoint docs (orchestration, conversations)
 - [Integration Guide](./docs/integration-guide.md) — Step-by-step tutorial with advanced features
 - [Security](https://nataris.ai/security) — Our security model
 - [FAQ](https://nataris.ai/faq) — Common questions
@@ -195,8 +196,8 @@ Check out the [examples](./examples) folder:
 | Quarter | Milestone |
 |---------|-----------|
 | **Q1 2026** | Beta launch — Android app, core models ← We are here |
-| **Q2 2026** | Token launch — Provider rewards, staking |
-| **Q3 2026** | iOS app — Enterprise tier, SLAs |
+| **Q2 2026** | iOS app, 7B models, RAG |
+| **Q3 2026** | Enterprise tier, SLAs |
 | **Q4 2026** | Ecosystem — Connectors, governance |
 
 ---
