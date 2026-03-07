@@ -223,9 +223,9 @@ curl https://api.nataris.ai/v1/usage \
       "requests": 1000,
       "tokens": 100000
     },
-    "whisper-small": {
+    "llama-3.2-1b-instruct-q4_k_m": {
       "requests": 250,
-      "seconds": 3600
+      "tokens": 25000
     }
   }
 }
@@ -256,8 +256,6 @@ curl https://api.nataris.ai/v1/usage \
   }
 }
 ```
-
----
 
 ---
 
@@ -303,70 +301,6 @@ curl -X POST https://api.nataris.ai/v1/chat/completions \
 | `auto` | Auto-selected | Based on input |
 
 **Pricing:** Orchestrated steps are billed at the same base model rate (no surcharge). Use `POST /v1/workflows/estimate` to preview costs.
-
----
-
-### POST /documents
-
-Upload a document for RAG (Retrieval-Augmented Generation).
-
-**Request Body:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `content` | string | Yes | Full document text |
-| `document_name` | string | No | Filename for reference |
-| `chunk_size` | integer | No | Characters per chunk (default: 1000) |
-| `chunk_overlap` | integer | No | Overlap between chunks (default: 200) |
-
-**Example Request:**
-
-```bash
-curl -X POST https://api.nataris.ai/v1/documents \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "content": "Your full document text here...",
-    "document_name": "research-paper.txt"
-  }'
-```
-
-**Example Response:**
-
-```json
-{
-  "document_id": "doc_abc123",
-  "chunks_created": 12,
-  "document_name": "research-paper.txt"
-}
-```
-
----
-
-### POST /chat/completions (with RAG)
-
-Ask questions grounded in your uploaded documents.
-
-**Additional Fields:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `rag.enabled` | boolean | No | Enable RAG context injection |
-| `rag.document_id` | string | No | Limit to specific document |
-| `rag.max_chunks` | integer | No | Max context chunks (default: 3) |
-
-**Example:**
-
-```bash
-curl -X POST https://api.nataris.ai/v1/chat/completions \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "llama-3.2-1b-instruct-q4_k_m",
-    "messages": [{"role": "user", "content": "Summarize the key findings"}],
-    "rag": {"enabled": true, "document_id": "doc_abc123", "max_chunks": 5}
-  }'
-```
 
 ---
 
@@ -439,6 +373,12 @@ curl -X POST https://api.nataris.ai/v1/workflows/estimate \
   -H "Content-Type: application/json" \
   -d '{"model": "llama-3.2-1b-instruct-q4_k_m", "workflow": "research"}'
 ```
+
+---
+
+## RAG (Document Q&A) — Coming Soon
+
+Document upload and retrieval-augmented generation are coming soon.
 
 ---
 
