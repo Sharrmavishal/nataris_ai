@@ -70,17 +70,4 @@ curl -s -X POST "${API_URL}/chat/completions" \
   }' | jq .
 
 echo ""
-
-# 6. RAG — Upload document and query
-echo "6. RAG: Upload Document"
-echo "------------------------"
-curl -s -X POST "${API_URL}/documents" \
-  -H "Authorization: Bearer ${API_KEY}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "content": "Renewable energy is growing rapidly. Solar power capacity doubled in 2025. Wind energy now provides 10% of global electricity.",
-    "document_name": "energy-report.txt"
-  }' | jq .
-
-echo ""
 echo "=== Done ==="
