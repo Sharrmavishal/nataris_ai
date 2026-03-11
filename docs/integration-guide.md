@@ -103,11 +103,13 @@ POST /v1/inference
 |-------|------------|----------|
 | `qwen2.5-0.5b-instruct-q6_k` | 0.5B | Fast responses, simple tasks |
 | `llama-3.2-1b-instruct-q4_k_m` | 1B | General purpose |
-| `phi-3-mini` | 3.8B | Complex reasoning |
-| `mistral-7b` *(coming soon)* | 7B | Advanced tasks |
-| `llama-2-7b` *(coming soon)* | 7B | Broad knowledge |
+| `phi-3-mini-4k-instruct-q4_k_m` | 3.8B | Complex reasoning |
 
-> **Audio models (Whisper, Piper):** Built but temporarily disabled. Will be re-enabled once text inference capacity grows.
+> **7B models and audio (Whisper, Piper):** Built but temporarily unavailable. Will be enabled as provider network grows.
+
+> **Cold start times:** Models are kept warm for 30 minutes after last use. First request after the warm window may take 30–180s depending on model size. Always use `"stream": true` to avoid proxy timeouts during cold starts.
+
+> **Model warming — `model_warming` error:** If a provider device is still downloading a model (typically after a fresh install), requests for that model return a `503 model_warming` error. **You are not charged for these.** Retry after 5–10 minutes. Once downloaded, the model stays available for all future requests.
 
 ## Error Handling
 
@@ -153,10 +155,6 @@ For complex tasks, Nataris can chain multiple inference steps automatically. Add
 **Workflow types:** `research` (research → analyze → write), `code` (plan → implement → review), `agent` (ReAct think/act loop), `map_reduce` (parallel document processing), `auto` (auto-detected).
 
 Orchestrated steps are billed at the same base model rate (no surcharge). Use `POST /v1/workflows/estimate` to preview costs before running.
-
-## Document-Grounded Responses (RAG) — Coming Soon
-
-RAG (Retrieval-Augmented Generation) is in development and will allow you to upload documents and ground responses in your content.
 
 ## Conversation Memory
 
@@ -302,11 +300,7 @@ Choose the smallest model that meets your needs:
 - General purpose → `llama-3.2-1b-instruct-q4_k_m`
 - Complex reasoning → `phi-3-mini`
 
-### 3. Use Streaming for Long Responses
-
-For Phi-3 or complex orchestration tasks, enable `stream: true` to avoid gateway timeouts on long responses.
-
-### 4. Monitor Usage
+### 3. Monitor Usage
 
 Check your usage in the [billing dashboard](https://nataris.ai/billing) to:
 - Track credit consumption

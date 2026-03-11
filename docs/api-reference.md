@@ -223,9 +223,9 @@ curl https://api.nataris.ai/v1/usage \
       "requests": 1000,
       "tokens": 100000
     },
-    "llama-3.2-1b-instruct-q4_k_m": {
+    "whisper-small": {
       "requests": 250,
-      "tokens": 25000
+      "seconds": 3600
     }
   }
 }
@@ -242,7 +242,8 @@ curl https://api.nataris.ai/v1/usage \
 | 402 | `INSUFFICIENT_CREDITS` | Account balance depleted |
 | 404 | `MODEL_NOT_FOUND` | Model doesn't exist |
 | 429 | `RATE_LIMIT_EXCEEDED` | Too many requests |
-| 202 | `MODEL_PROVISIONING` | Model is being provisioned (request queued) |
+| 503 | `model_warming` | No provider has this model available yet (may be downloading). Retry in 5–10 min. |
+| 408 | `REQUEST_TIMEOUT` | Job assigned but provider did not respond in time. **Not charged.** |
 
 **Error Response Format:**
 
@@ -256,6 +257,8 @@ curl https://api.nataris.ai/v1/usage \
   }
 }
 ```
+
+---
 
 ---
 
@@ -373,12 +376,6 @@ curl -X POST https://api.nataris.ai/v1/workflows/estimate \
   -H "Content-Type: application/json" \
   -d '{"model": "llama-3.2-1b-instruct-q4_k_m", "workflow": "research"}'
 ```
-
----
-
-## RAG (Document Q&A) — Coming Soon
-
-Document upload and retrieval-augmented generation are coming soon.
 
 ---
 
